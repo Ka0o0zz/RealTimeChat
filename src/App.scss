@@ -1,0 +1,32 @@
+@use './pages/Auth/Auth.scss';
+@use './routes/components/ErrorRoutes/ErrorRoutes.scss';
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;500;600;700;800;900&display=swap');
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+
+    font-family: 'Poppins', sans-serif;
+
+    a {
+        text-decoration: none;
+    }
+}
+
+.button-primary {
+    margin: 10px auto;
+    width: 90%;
+    height: 50px;
+    background: rgb(33, 43, 54);
+    color: rgb(255, 255, 255);
+    border-radius: 10%;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.error-input {
+    color: #d32f2f;
+    margin: 0;
+}
