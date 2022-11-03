@@ -1,16 +1,22 @@
-import registerImg from "../../../assets/illustration_register.png";
+import { Link } from "react-router-dom";
+import { SubmitHandler, useForm } from "react-hook-form";
 
+
+//helpers
+import { handleEmailValidation } from "@helpers/handleEmailValidation";
+
+//components
+import { Input } from "@components/Input";
+
+//libraries
 import IconButton from "@mui/material/IconButton";
 import Divider from "@mui/material/Divider";
 import FacebookRoundedIcon from "@mui/icons-material/FacebookRounded";
 import GoogleIcon from "@mui/icons-material/Google";
 import GitHubIcon from "@mui/icons-material/GitHub";
 
-import { SubmitHandler, useForm } from "react-hook-form";
-import { handleEmailValidation } from "../../../helpers/handleEmailValidation";
-
-import { Input } from "../../../components/Input";
-import { Link } from "react-router-dom";
+//assets
+import registerImg from "./assets/illustration_register.png";
 
 interface IFormInputs {
   email: string;
@@ -29,8 +35,6 @@ export const Register = () => {
     formState: { errors },
     handleSubmit,
   } = useForm<IFormInputs>();
-
-  console.log(errors);
 
   return (
     <main className="Auth register">

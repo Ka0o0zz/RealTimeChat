@@ -1,14 +1,14 @@
+import { useState } from "react";
+
 import IconButton from "@mui/material/IconButton";
 import InputLabel from "@mui/material/InputLabel";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import InputAdornment from "@mui/material/InputAdornment";
 import FormControl from "@mui/material/FormControl";
-
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import { useEffect, useState } from "react";
 
-type InputPassword = {
+type Input = {
   id?: string;
   label: string;
   register: object;
@@ -28,7 +28,7 @@ export const Input = ({
   password,
   type,
   errorEmail,
-}: InputPassword) => {
+}: Input) => {
   const [showPassword, setShowPassword] = useState(false);
 
   const handleClickShowPassword = () => {
