@@ -1,6 +1,6 @@
 import errorImg from "@assets/error-404.svg";
 
-export const ErrorPage = () => {
+const ErrorPage = () => {
   return (
     <div className="error-page">
       <h1>Sorry, page not found!</h1>
@@ -12,3 +12,5 @@ export const ErrorPage = () => {
     </div>
   );
 };
+
+export default ErrorPage;

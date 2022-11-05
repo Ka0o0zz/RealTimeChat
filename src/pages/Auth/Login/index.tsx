@@ -32,19 +32,15 @@ import GitHubIcon from "@mui/icons-material/GitHub";
 
 //assets
 import loginImg from "./assets/illustration_login.png";
+import { ErrorAuth } from "@models/auth";
 
 interface IFormInputs {
   email: string;
   password: string;
 }
 
-interface ErrorLogin {
-  state: boolean;
-  message: string;
-}
-
 const Login = () => {
-  const [errorLogin, setErrorLogin] = useState<ErrorLogin>({
+  const [errorLogin, setErrorLogin] = useState<ErrorAuth>({
     state: false,
     message: "",
   });
@@ -102,9 +98,13 @@ const Login = () => {
               }),
             }}
             error={errors.email ? true : false}
-            helperText={"You must enter your email"}
+            helperText={
+              errors.email?.type === "validate"
+                ? "Enter a valid email"
+                : "Enter your email"
+            }
             type="email"
-            errorEmail={errors.email?.type === "validate"}
+            errorValidate={errors.email?.type === "validate"}
           />
 
           <Input

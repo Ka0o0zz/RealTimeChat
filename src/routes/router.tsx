@@ -6,10 +6,12 @@ import { Provider } from "react-redux";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import theme from "../theme";
 import { SnackbarUtilsConfigurator } from "@helpers/snackbar.helper";
-import { ErrorPage } from "./components/ErrorRoutes";
 
 // Routes
 const Login = lazy(() => import("@pages/Auth/Login"));
+const Register = lazy(() => import("@pages/Auth/Register"));
+const Verify = lazy(() => import("@pages/Auth/Verify"));
+const NoFoundComponent = lazy(() => import("./components/ErrorRoutes"));
 
 const Router = () => {
   return (
@@ -22,8 +24,10 @@ const Router = () => {
               <Provider store={store}>
                 <BrowserRouter>
                   <Routes>
-                    <Route path="/login" element={<Login />} />
-                    <Route path="*" element={<ErrorPage />} />
+                    <Route path="/auth/login" element={<Login />} />
+                    <Route path="/auth/register" element={<Register />} />
+                    <Route path="/auth/verify/:uuid" element={<Verify />} />
+                    <Route path="*" element={<NoFoundComponent />} />
                   </Routes>
                 </BrowserRouter>
               </Provider>

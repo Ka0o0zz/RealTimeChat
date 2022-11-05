@@ -1,5 +1,6 @@
 @use './pages/Auth/Auth.scss';
 @use './routes/components/ErrorRoutes/ErrorRoutes.scss';
+@use './pages/Auth/Verify/Verify.scss';
 
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;500;600;700;800;900&display=swap');
 
@@ -21,7 +22,7 @@
     height: 50px;
     background: rgb(33, 43, 54);
     color: rgb(255, 255, 255);
-    border-radius: 10%;
+    border-radius: 10px;
     font-weight: 600;
     cursor: pointer;
 }

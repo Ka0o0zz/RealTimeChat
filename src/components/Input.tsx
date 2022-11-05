@@ -16,7 +16,7 @@ type Input = {
   helperText: string;
   password: boolean;
   type?: string;
-  errorEmail?: boolean;
+  errorValidate?: boolean;
 };
 
 export const Input = ({
@@ -27,7 +27,7 @@ export const Input = ({
   helperText,
   password,
   type,
-  errorEmail,
+  errorValidate,
 }: Input) => {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -79,12 +79,10 @@ export const Input = ({
             )
           }
         />
-        {errorEmail ? (
-          <p className="error-input">Invalid email</p>
-        ) : error ? (
+        {errorValidate ? (
           <p className="error-input">{helperText}</p>
         ) : (
-          <></>
+          error && <p className="error-input">{helperText}</p>
         )}
       </FormControl>
     </>

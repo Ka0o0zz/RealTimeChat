@@ -1,6 +1,5 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { SubmitHandler, useForm } from "react-hook-form";
-
 
 //helpers
 import { handleEmailValidation } from "@helpers/handleEmailValidation";
@@ -17,6 +16,14 @@ import GitHubIcon from "@mui/icons-material/GitHub";
 
 //assets
 import registerImg from "./assets/illustration_register.png";
+import { createAdapterPostUser } from "@adapters/userAdapter";
+import { registerUser } from "@services/auth";
+import useFetchAndLoad from "@hooks/useFetchAndLoad";
+import { useRef, useState } from "react";
+import { handlePasswordMatch } from "@helpers/handlePasswordMatch";
+import { ErrorFeedback } from "@components/ErrorFeedback";
+import { ErrorAuth } from "@models/auth";
+import { CircularProgress } from "@mui/material";
 
 interface IFormInputs {
   email: string;
@@ -25,16 +32,49 @@ interface IFormInputs {
   lastName: string;
   phone: number;
   validatePassword: string;
+  privacy: boolean;
 }
 
-export const Register = () => {
-  const onSubmit: SubmitHandler<IFormInputs> = (data) => console.log(data);
+const Register = () => {
+  const [errorLogin, setErrorLogin] = useState<ErrorAuth>({
+    state: false,
+    message: "",
+  });
 
   const {
     register,
     formState: { errors },
     handleSubmit,
+    watch,
   } = useForm<IFormInputs>();
+
+  const password: any = useRef({});
+  password.current = watch("password", "");
+
+  const { loading, callEndpoint } = useFetchAndLoad();
+  const navigate = useNavigate();
+
+  const onSubmit: SubmitHandler<IFormInputs> = async (data) => {
+    const { name, lastName, email, phone, password } = data;
+
+    try {
+      const user = await callEndpoint(
+        registerUser(
+          createAdapterPostUser({ name, lastName, email, phone, password })
+        )
+      );
+      setErrorLogin({
+        state: false,
+        message: "",
+      });
+      navigate(`/auth/verify/${user.data.data.uuid}`);
+    } catch (error: any) {
+      setErrorLogin({
+        state: true,
+        message: error.response.data.msg,
+      });
+    }
+  };
 
   return (
     <main className="Auth register">
@@ -49,6 +89,15 @@ export const Register = () => {
             <a>log in</a>
           </Link>
         </p>
+        {errorLogin.state && (
+          <ErrorFeedback
+            error="error"
+            title="Error"
+            principalText={errorLogin.message}
+            secondaryText={"recover your account here"}
+            link={"recover-password"}
+          />
+        )}
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="two-inputs-inline">
             <Input
@@ -89,9 +138,13 @@ export const Register = () => {
                 }),
               }}
               error={errors.email ? true : false}
-              helperText={"Enter your email"}
+              helperText={
+                errors.email?.type === "validate"
+                  ? "Enter a valid email"
+                  : "Enter your email"
+              }
               type="email"
-              errorEmail={errors.email?.type === "validate"}
+              errorValidate={errors.email?.type === "validate"}
             />
 
             <Input
@@ -112,27 +165,65 @@ export const Register = () => {
             <Input
               label="Password"
               password={true}
-              register={{ ...register("password", { required: true }) }}
+              register={{
+                ...register("password", {
+                  required: true,
+                  minLength: {
+                    value: 8,
+                    message: "Password must have at least 8 characters",
+                  },
+                }),
+              }}
               error={errors.password ? true : false}
-              helperText={"Enter your password"}
+              helperText={
+                errors.password?.type === "minLength"
+                  ? `${errors?.password?.message}`
+                  : "Enter your password"
+              }
             />
 
             <Input
               label="Password"
               password={true}
-              register={{ ...register("validatePassword", { required: true }) }}
+              register={{
+                ...register("validatePassword", {
+                  required: true,
+                  validate: (value) =>
+                    handlePasswordMatch(password.current, value),
+                }),
+              }}
               error={errors.validatePassword ? true : false}
-              helperText={"enter your password"}
+              helperText={
+                errors.validatePassword?.type === "validate"
+                  ? `The passwords do not match`
+                  : "Enter your password"
+              }
+              errorValidate={errors.validatePassword?.type === "validate"}
             />
           </div>
           <div className="conditions">
-            <input type="checkbox" />
+            <input
+              type="checkbox"
+              {...register("privacy", {
+                required: true,
+                validate: (value) => value === true,
+              })}
+            />
             <p>
               I accept the <a href="#">Terms of Service</a> and agree to the{" "}
               <a href="">Privacy Policy</a>.
             </p>
           </div>
-          <button className="button-primary">Register</button>
+          {errors.privacy && (
+            <div className="conditions">
+              <p className="error-input">
+                You must agree to terms and conditions
+              </p>
+            </div>
+          )}
+          <button className="button-primary">
+            {loading ? <CircularProgress color="inherit" /> : "Register"}
+          </button>
           <Divider className="divider-login">OR</Divider>
           <div className="social-media">
             <IconButton>
@@ -150,3 +241,5 @@ export const Register = () => {
     </main>
   );
 };
+
+export default Register;
